@@ -6,9 +6,7 @@ import Base from "@components/og-image";
 import { parseRequest } from "@lib/parser"
 import { sanitizeHtml } from "@lib/sanitizer";
 
-const isDev = true
-const fileType = "png";
-const isHtmlDebug = false;
+// const isDev = true
 
 const makeHtml = (base: string) => {
   return `
@@ -22,8 +20,11 @@ const makeHtml = (base: string) => {
     </html>`;
 }
 
+const isDev = !process.env.AWS_REGION;
+const isHtmlDebug = process.env.OG_HTML_DEBUG === "1";
+
 const handler = async (req: Req, res: Res) => {
-  const { theme, text, md, fontSize } = parseRequest(req)
+  const { theme, text, md, fontSize, fileType } = parseRequest(req)
   const html = ReactDOMServer.renderToString(<Base mode={theme} text={text} md={md} fontSize={fontSize} />);
   try {
     if (isHtmlDebug) {
